@@ -1,7 +1,8 @@
-T-REX 1.3 http://tiny-rex.sourceforge.net
+TINY-REX https://github.com/omtinez/tiny-rex
 ----------------------------------------------------------------------
-	T-Rex a tiny regular expression library
+	Tiny-Rex a tiny regular expression library
 
+    Copyright (C) 2014 Oscar Martinez
 	Copyright (C) 2003-2006 Alberto Demichelis
 
 	This software is provided 'as-is', without any express 

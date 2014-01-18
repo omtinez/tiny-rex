@@ -6,8 +6,7 @@ int main(int argc, char* argv[])
 {
     const char *begin,*end;
     char sTemp[64];
-    const char *error = NULL;
-    TRex *x = trex_compile("x{2}yy",&error);
+    struct TRex *x = trex_compile("x{2}yy");
     if(x) {
         sprintf(sTemp,"AxxyyxxA");
         if (trex_match(x, sTemp)) printf("match");
@@ -30,12 +29,12 @@ int main(int argc, char* argv[])
         else {
             printf("no match!\n");
         }
+        */
 
         trex_free(x);
-        */
     }
     else {
-        printf("compilation error [%s]!\n",error?error:"undefined");
+        printf("compilation error: 0x%02x\n", trex_error(x));
     }
     return 0;
 }

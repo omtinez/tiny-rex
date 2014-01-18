@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <ctype.h>
 #include <setjmp.h>
 #include "trex.h"
@@ -27,6 +28,17 @@
 #define TREX_SYMBOL_BEGINNING_OF_STRING ('^')
 #define TREX_SYMBOL_ESCAPE_CHAR ('\\')
 
+#define ERR_EXPECTED_COMMA_OR_BRACE     0x01
+#define ERR_EXPECTED_PARENTHESIS        0x02
+#define ERR_EXPECTED_NUMBER             0x03
+#define ERR_EXPECTED_LETTER             0x04
+#define ERR_EMPTY_CLASS                 0x05
+#define ERR_UNFINISHED_RANGE            0x06
+#define ERR_INVALID_RANGE_NUM           0x07
+#define ERR_INVALID_RANGE_CHAR          0x08
+#define ERR_NUMERIC_OVERFLOW            0x09
+#define ERR_UNEXPECTED_CHAR             0x0A
+
 
 typedef int TRexNodeType;
 
@@ -49,7 +61,7 @@ struct TRex {
     int _nsubexpr;
     TRexMatch *_matches;
     int _currsubexp;
-    const char **_error;
+    uint8_t _error;
 };
 
 static int trex_list(TRex *exp);
@@ -63,7 +75,6 @@ static int trex_newnode(TRex *exp, TRexNodeType type)
     if(type == OP_EXPR)
         n.right = exp->_nsubexpr++;
     if(exp->_nallocated < (exp->_nsize + 1)) {
-        int oldsize = exp->_nallocated;
         exp->_nallocated *= 2;
         exp->_nodes = (TRexNode *)realloc(exp->_nodes, exp->_nallocated * sizeof(TRexNode));
     }
@@ -72,20 +83,14 @@ static int trex_newnode(TRex *exp, TRexNodeType type)
     return (int)newid;
 }
 
-static void trex_error(TRex *exp, const char *error)
-{
-    if(exp->_error) *exp->_error = error;
-}
-
 static void trex_expect(TRex *exp, int n){
-    if((*exp->_p) != n) 
-        trex_error(exp, "expected paren");
+    if((*exp->_p) != n) exp->_error = ERR_EXPECTED_PARENTHESIS;
     exp->_p++;
 }
 
 static char trex_escapechar(TRex *exp)
 {
-    if(*exp->_p == TREX_SYMBOL_ESCAPE_CHAR){
+    if(*exp->_p == TREX_SYMBOL_ESCAPE_CHAR) {
         exp->_p++;
         switch(*exp->_p) {
         case 'v': exp->_p++; return '\v';
@@ -95,11 +100,13 @@ static char trex_escapechar(TRex *exp)
         case 'f': exp->_p++; return '\f';
         default: return (*exp->_p++);
         }
-    } else if(!isprint(*exp->_p)) trex_error(exp,"letter expected");
+    } else if(!isprint(*exp->_p)) {
+        exp->_error = ERR_EXPECTED_LETTER;
+    }
     return (*exp->_p++);
 }
 
-static int trex_charclass(TRex *exp,int classid)
+static int trex_charclass(TRex *exp, int classid)
 {
     int n = trex_newnode(exp,OP_CCLASS);
     exp->_nodes[n].left = classid;
@@ -139,7 +146,7 @@ static int trex_charnode(TRex *exp,TRexBool isclass)
     }
     else if(!isprint(*exp->_p)) {
         
-        trex_error(exp,"letter expected");
+        exp->_error = ERR_EXPECTED_LETTER;
     }
     t = *exp->_p; exp->_p++; 
     return trex_newnode(exp,t);
@@ -153,15 +160,15 @@ static int trex_class(TRex *exp)
         exp->_p++;
     }else ret = trex_newnode(exp,OP_CLASS);
     
-    if(*exp->_p == ']') trex_error(exp,"empty class");
+    if(*exp->_p == ']') exp->_error = ERR_EMPTY_CLASS;
     chain = ret;
     while(*exp->_p != ']' && exp->_p != exp->_eol) {
         if(*exp->_p == '-' && first != -1){ 
             int r,t;
-            if(*exp->_p++ == ']') trex_error(exp,"unfinished range");
+            if(*exp->_p++ == ']') exp->_error = ERR_UNFINISHED_RANGE;
             r = trex_newnode(exp,OP_RANGE);
-            if(first>*exp->_p) trex_error(exp,"invalid range");
-            if(exp->_nodes[first].type == OP_CCLASS) trex_error(exp,"cannot use character classes in ranges");
+            if(first>*exp->_p) exp->_error = ERR_INVALID_RANGE_NUM;
+            if(exp->_nodes[first].type == OP_CCLASS) exp->_error = ERR_INVALID_RANGE_CHAR;
             exp->_nodes[r].left = exp->_nodes[first].type;
             t = trex_escapechar(exp);
             exp->_nodes[r].right = t;
@@ -200,7 +207,7 @@ static int trex_parsenumber(TRex *exp)
     exp->_p++;
     while(isdigit(*exp->_p)) {
         ret = ret*10+(*exp->_p++-'0');
-        if(positions==1000000000) trex_error(exp,"overflow in numeric constant");
+        if(positions==1000000000) exp->_error = ERR_NUMERIC_OVERFLOW;
         positions *= 10;
     };
     return ret;
@@ -251,7 +258,7 @@ static int trex_element(TRex *exp)
             case TREX_SYMBOL_GREEDY_ZERO_OR_ONE: p0 = 0; p1 = 1; exp->_p++; isgreedy = TRex_True; break;
             case '{':
                 exp->_p++;
-                if(!isdigit(*exp->_p)) trex_error(exp,"number expected");
+                if(!isdigit(*exp->_p)) exp->_error = ERR_EXPECTED_NUMBER;
                 p0 = (unsigned short)trex_parsenumber(exp);
                 /*******************************/
                 switch(*exp->_p) {
@@ -267,7 +274,7 @@ static int trex_element(TRex *exp)
                 trex_expect(exp,'}');
                 break;
             default:
-                trex_error(exp,", or } expected");
+                exp->_error = ERR_EXPECTED_COMMA_OR_BRACE;
         }
         /*******************************/
         isgreedy = TRex_True; 
@@ -501,7 +508,7 @@ static const char *trex_matchnode(TRex* exp,TRexNode *node,const char *str,TRexN
 }
 
 /* public api */
-TRex *trex_compile(const char *pattern,const char **error)
+TRex *trex_compile(const char *pattern)
 {
     TRex *exp = (TRex *)malloc(sizeof(TRex));
     exp->_eol = exp->_bol = NULL;
@@ -512,10 +519,10 @@ TRex *trex_compile(const char *pattern,const char **error)
     exp->_matches = 0;
     exp->_nsubexpr = 0;
     exp->_first = trex_newnode(exp,OP_EXPR);
-    exp->_error = error;
+    exp->_error = 0;
     int res = trex_list(exp);
     exp->_nodes[exp->_first].left = res;
-    if(*exp->_p!='\0') trex_error(exp,"unexpected character");
+    if(*exp->_p!='\0') exp->_error = ERR_UNEXPECTED_CHAR;
     exp->_matches = (TRexMatch *) malloc(exp->_nsubexpr * sizeof(TRexMatch));
     memset(exp->_matches, 0, exp->_nsubexpr * sizeof(TRexMatch));
     
@@ -531,6 +538,10 @@ void trex_free(TRex *exp)
     }
 }
 
+uint8_t trex_error(TRex* exp) {
+    return exp->_error;
+}
+
 TRexBool trex_match(TRex* exp, const char* text)
 {
     const char* res = NULL;
@@ -543,7 +554,6 @@ TRexBool trex_match(TRex* exp, const char* text)
     return TRex_True;
 }
 
-/*
 TRexBool trex_searchrange(TRex* exp,const char* text_begin,const char* text_end,const char** out_begin, const char** out_end)
 {
     const char *cur = NULL;
@@ -589,4 +599,3 @@ TRexBool trex_getsubexp(TRex* exp, int n, TRexMatch *subexp)
     *subexp = exp->_matches[n];
     return TRex_True;
 }
-*/

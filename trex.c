@@ -1,4 +1,3 @@
-/* see copyright notice in trex.h */
 #include <string.h>
 #include <stdlib.h>
 #include <ctype.h>

@@ -5,11 +5,15 @@
 int main(int argc, char* argv[])
 {
 	const char *begin,*end;
-	char sTemp[200];
+	char sTemp[64];
 	const char *error = NULL;
-	TRex *x = trex_compile("(x{2})yy",&error);
+	TRex *x = trex_compile("x{2}yy",&error);
 	if(x) {
 		sprintf(sTemp,"AxxyyxxA");
+        if (trex_match(x, sTemp)) printf("match");
+        else printf("no match");
+
+        /*
 		if(trex_search(x,sTemp,&begin,&end))
 		{
 			int i,n = trex_getsubexpcount(x);
@@ -26,6 +30,8 @@ int main(int argc, char* argv[])
 		else {
 			printf("no match!\n");
 		}
+        */
+
 		trex_free(x);
 	}
 	else {

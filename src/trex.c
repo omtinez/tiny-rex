@@ -4,18 +4,6 @@
 #include <setjmp.h>
 #include "trex.h"
 
-#ifdef _DEBUG
-#include <stdio.h>
-
-static const char *g_nnames[] =
-{
-	"NONE","OP_GREEDY",	"OP_OR",
-	"OP_EXPR","OP_NOCAPEXPR","OP_DOT",	"OP_CLASS",
-	"OP_CCLASS","OP_NCLASS","OP_RANGE","OP_CHAR",
-	"OP_EOL","OP_BOL","OP_WB"
-};
-
-#endif
 #define OP_GREEDY		(MAX_CHAR+1) // * + ? {n}
 #define OP_OR			(MAX_CHAR+2)
 #define OP_EXPR			(MAX_CHAR+3) //parentesis ()
@@ -533,23 +521,6 @@ TRex *trex_compile(const char *pattern,const char **error)
 		exp->_nodes[exp->_first].left = res;
 		if(*exp->_p!='\0')
 			trex_error(exp,"unexpected character");
-#ifdef _DEBUG
-		{
-			int nsize,i;
-			TRexNode *t;
-			nsize = exp->_nsize;
-			t = &exp->_nodes[0];
-			printf("\n");
-			for(i = 0;i < nsize; i++) {
-				if(exp->_nodes[i].type>MAX_CHAR)
-					printf("[%02d] %10s ",i,g_nnames[exp->_nodes[i].type-MAX_CHAR]);
-				else
-					printf("[%02d] %10c ",i,exp->_nodes[i].type);
-				printf("left %02d right %02d next %02d\n",exp->_nodes[i].left,exp->_nodes[i].right,exp->_nodes[i].next);
-			}
-			printf("\n");
-		}
-#endif
 		exp->_matches = (TRexMatch *) malloc(exp->_nsubexpr * sizeof(TRexMatch));
 		memset(exp->_matches,0,exp->_nsubexpr * sizeof(TRexMatch));
 	}

@@ -163,5 +163,5 @@ The function returns `TRex_True` if n is valid index otherwise `TRex_False`.
 + `n`: the index of the submatch
 + `submatch`: a pointer to structure that will store the result
 	
-This function works also after a match operation has been performend.
+This function works also after a match operation has been performed.
 	

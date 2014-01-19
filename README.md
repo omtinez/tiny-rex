@@ -33,22 +33,22 @@ binary format, the binary size is under 8K.
 TRex implements the following expressions
 -----------------------------------------
 
-    `\`	    Quote the next metacharacter
-    `^`	    Match the beginning of the string
-    `.`	    Match any character
-    `$`	    Match the end of the string
-    `|`	    Alternation
-    `()`	Grouping (creates a capture)
-    `[]`	Character class  
+        \  Quote the next metacharacter
+        ^  Match the beginning of the string
+        .  Match any character
+        $  Match the end of the string
+        |  Alternation
+        ()	Grouping (creates a capture)
+        []	Character class  
 
 * GREEDY CLOSURES
 
-    `*`      Match 0 or more times
-    `+`	     Match 1 or more times
-    `?`	     Match 1 or 0 times
-    `{n}`    Match exactly n times
-    `{n,}`   Match at least n times
-    `{n,m}`  Match at least n but not more than m times  
+        *      Match 0 or more times
+        +	     Match 1 or more times
+        ?	     Match 1 or 0 times
+        {n}    Match exactly n times
+        {n,}   Match at least n times
+        {n,m}  Match at least n but not more than m times  
 
 * ESCAPE CHARACTERS
 

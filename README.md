@@ -32,155 +32,135 @@ TINY-REX https://github.com/omtinez/tiny-rex
 TRex implements the following expressions
 =========================================
 
-\	Quote the next metacharacter
-^	Match the beginning of the string
-.	Match any character
-$	Match the end of the string
-|	Alternation
-()	Grouping (creates a capture)
-[]	Character class  
+    \	Quote the next metacharacter
+    ^	Match the beginning of the string
+    .	Match any character
+    $	Match the end of the string
+    |	Alternation
+    ()	Grouping (creates a capture)
+    []	Character class  
 
-GREEDY CLOSURES
-===============
+*GREEDY CLOSURES*
 
-*	   Match 0 or more times
-+	   Match 1 or more times
-?	   Match 1 or 0 times
-{n}    Match exactly n times
-{n,}   Match at least n times
-{n,m}  Match at least n but not more than m times  
+    *	   Match 0 or more times
+    +	   Match 1 or more times
+    ?	   Match 1 or 0 times
+    {n}    Match exactly n times
+    {n,}   Match at least n times
+    {n,m}  Match at least n but not more than m times  
 
-ESCAPE CHARACTERS
-=================
+*ESCAPE CHARACTERS*
 
-\t		tab                   (HT, TAB)
-\n		newline               (LF, NL)
-\r		return                (CR)
-\f		form feed             (FF)
+    \t		tab                   (HT, TAB)
+    \n		newline               (LF, NL)
+    \r		return                (CR)
+    \f		form feed             (FF)
 
-PREDEFINED CLASSES
-==================
+*PREDEFINED CLASSES*
 
-\l		lowercase next char
-\u		uppercase next char
-\a		letters
-\A		non letters
-\w		alphanimeric [0-9a-zA-Z]
-\W		non alphanimeric
-\s		space
-\S		non space
-\d		digits
-\D		non nondigits
-\x		exadecimal digits
-\X		non exadecimal digits
-\c		control charactrs
-\C		non control charactrs
-\p		punctation
-\P		non punctation
-\b		word boundary
-\B		non word boundary
+    \l		lowercase next char
+    \u		uppercase next char
+    \a		letters
+    \A		non letters
+    \w		alphanimeric [0-9a-zA-Z]
+    \W		non alphanimeric
+    \s		space
+    \S		non space
+    \d		digits
+    \D		non nondigits
+    \x		exadecimal digits
+    \X		non exadecimal digits
+    \c		control charactrs
+    \C		non control charactrs
+    \p		punctation
+    \P		non punctation
+    \b		word boundary
+    \B		non word boundary
 
 API DOC
--------
+=======
 
 `TRex *trex_compile(const TRexChar *pattern);`
 
-compiles an expression and returns a pointer to the compiled version.
+Compiles an expression and returns a pointer to the compiled version.
 in case of failure returns NULL.The returned object has to be deleted
 through the function `trex_free()`.
 
-+ pattern
-	a pointer to a zero terminated string containing the pattern that 
-	has to be compiled.
++ `pattern`: a pointer to a zero terminated string containing the 
+  pattern that has to be compiled.
 	
 ----------------------------------------------------------------------
 
 `void trex_free(TRex *exp)`
 
-deletes a expression structure created with `trex_compile()`
+Deletes a expression structure created with `trex_compile()`
 
-+ exp
-	the expression structure that has to be deleted
++ `exp`: the expression structure that has to be deleted
 
 ----------------------------------------------------------------------
 
 `TRexBool trex_match(TRex* exp,const TRexChar* text)`
 
-returns `TRex_True` if the string specified in the parameter text is an
+Returns `TRex_True` if the string specified in the parameter text is an
 exact match of the expression, otherwise returns `TRex_False`.
 
-+ exp
-	the compiled expression
-+ text
-	the string that has to be tested
++ `exp`: the compiled expression
++ `text`: the string that has to be tested
 	
 ----------------------------------------------------------------------
+
 `TRexBool trex_search(TRex* exp,const TRexChar* text, const TRexChar** out_begin, const TRexChar** out_end)`
 
-searches the first match of the expressin in the string specified in the parameter text.
+Searches the first match of the expressin in the string specified in the parameter text.
 if the match is found returns `TRex_True` and the sets `out_begin` to the beginning of the
 match and `out_end` at the end of the match; otherwise returns `TRex_False`.
 
-+ exp
-	the compiled expression
-+ text
-	the string that has to be tested
-+ out_begin
-	a pointer to a string pointer that will be set with the beginning of the match
-+ out_end
-	a pointer to a string pointer that will be set with the end of the match
++ `exp`: the compiled expression
++ `text`: the string that has to be tested
++ `out_begin`: a pointer to a string pointer that will be set with the beginning of the match
++ `out_end`: a pointer to a string pointer that will be set with the end of the match
 
 ----------------------------------------------------------------------
 
 `TREX_API TRexBool trex_searchrange(TRex* exp,const TRexChar* text_begin,const TRexChar* text_end,const TRexChar** out_begin, const TRexChar** out_end)`
 
-searches the first match of the expressin in the string delimited 
-by the parameter `text_begin` and `text_end`.
-if the match is found returns `TRex_True` and the sets `out_begin` to the beginning of the
-match and `out_end` at the end of the match; otherwise returns `TRex_False`.
+Searches the first match of the expression in the string delimited by 
+the parameter `text_begin` and `text_end`. If the match is found 
+returns `TRex_True` and the sets `out_begin` to the beginning of the
+match and `out_end` at the end of the match; otherwise returns 
+`TRex_False`.
 
-+ exp
-	the compiled expression
-+ text_begin
-	a pointer to the beginnning of the string that has to be tested
-text_end
-	a pointer to the end of the string that has to be tested
-out_begin
-	a pointer to a string pointer that will be set with the beginning of the match
-out_end
-	a pointer to a string pointer that will be set with the end of the match
++ `exp`: the compiled expression
++ `text_begin`: a pointer to the beginnning of the string that has to be tested
++ `text_end`: a pointer to the end of the string that has to be tested
++ `out_begin`: a pointer to a string pointer that will be set with the beginning of the match
++ `out_end`: a pointer to a string pointer that will be set with the end of the match
 	
 ----------------------------------------------------------------------
 
 `int trex_getsubexpcount(TRex* exp)`
 
-returns the number of sub expressions matched by the expression
+Returns the number of sub expressions matched by the expression
 
-+ exp
-	the compiled expression
++ `exp`: the compiled expression
 
 ---------------------------------------------------------------------
 
 `TRexBool trex_getsubexp(TRex* exp, int n, TRexMatch *submatch)`
 
-retrieve the begin and and pointer to the length of the sub expression indexed
-by n. The result is passed trhough the struct `TRexMatch`:
+Retrieve the begin and and pointer to the length of the sub expression indexed
+by `n`. The result is passed trhough the struct `TRexMatch`:
 
     typedef struct {
     	const TRexChar *begin;
     	int len;
     } TRexMatch;
 
-the function returns `TRex_True` if n is valid index otherwise `TRex_False`.
+The function returns `TRex_True` if n is valid index otherwise `TRex_False`.
 
-+ exp
-	the compiled expression
-
-+ n
-	the index of the submatch
-
-+ submatch
-	a pointer to structure that will store the result
++ `exp`: the compiled expression
++ `n`: the index of the submatch
++ `submatch`: a pointer to structure that will store the result
 	
-this function works also after a match operation has been performend.
+This function works also after a match operation has been performend.
 	

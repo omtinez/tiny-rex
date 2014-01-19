@@ -79,9 +79,9 @@ PREDEFINED CLASSES
         \B		non word boundary
 
 API DOC
-=======
+-------
 
-`TRex *trex_compile(const TRexChar *pattern);`
+`TRex *trex_compile(const TRexChar *pattern)`
 
 Compiles an expression and returns a pointer to the compiled version.
 in case of failure returns NULL.The returned object has to be deleted

@@ -41,7 +41,7 @@ TRex implements the following expressions
         ()	Grouping (creates a capture)
         []	Character class  
 
-* GREEDY CLOSURES
+GREEDY CLOSURES
 
         *      Match 0 or more times
         +	     Match 1 or more times
@@ -50,34 +50,34 @@ TRex implements the following expressions
         {n,}   Match at least n times
         {n,m}  Match at least n but not more than m times  
 
-* ESCAPE CHARACTERS
+ESCAPE CHARACTERS
 
-    \t		tab                   (HT, TAB)
-    \n		newline               (LF, NL)
-    \r		return                (CR)
-    \f		form feed             (FF)
+        \t		tab                   (HT, TAB)
+        \n		newline               (LF, NL)
+        \r		return                (CR)
+        \f		form feed             (FF)
 
-* PREDEFINED CLASSES
+PREDEFINED CLASSES
 
-    \l		lowercase next char
-    \u		uppercase next char
-    \a		letters
-    \A		non letters
-    \w		alphanimeric [0-9a-zA-Z]
-    \W		non alphanimeric
-    \s		space
-    \S		non space
-    \d		digits
-    \D		non nondigits
-    \x		exadecimal digits
-    \X		non exadecimal digits
-    \c		control charactrs
-    \C		non control charactrs
-    \p		punctation
-    \P		non punctation
-    \b		word boundary
-    \B		non word boundary
-`
+        \l		lowercase next char
+        \u		uppercase next char
+        \a		letters
+        \A		non letters
+        \w		alphanimeric [0-9a-zA-Z]
+        \W		non alphanimeric
+        \s		space
+        \S		non space
+        \d		digits
+        \D		non nondigits
+        \x		exadecimal digits
+        \X		non exadecimal digits
+        \c		control charactrs
+        \C		non control charactrs
+        \p		punctation
+        \P		non punctation
+        \b		word boundary
+        \B		non word boundary
+
 API DOC
 =======
 

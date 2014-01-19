@@ -1,10 +1,11 @@
 TINY-REX https://github.com/omtinez/tiny-rex
---------------------------------------------
-	Tiny-Rex a tiny regular expression library.
+============================================
 
-    This library has been optimized for smaller footprint and binary
-    size compared to the original author's work. For AVR microcontroller
-    binary format, the binary size is under 8K.
+Tiny-Rex a tiny regular expression library.
+
+This library has been optimized for smaller footprint and binary
+size compared to the original author's work. For AVR microcontroller
+binary format, the binary size is under 8K.
 
     Copyright (C) 2014 Oscar Martinez
 	Copyright (C) 2003-2006 Alberto Demichelis
@@ -40,7 +41,7 @@ TRex implements the following expressions
     ()	Grouping (creates a capture)
     []	Character class  
 
-*GREEDY CLOSURES*
+_GREEDY CLOSURES_
 
     *	   Match 0 or more times
     +	   Match 1 or more times

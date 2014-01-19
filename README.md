@@ -32,7 +32,7 @@ binary format, the binary size is under 8K.
 		
 TRex implements the following expressions
 -----------------------------------------
-
+`
     \	Quote the next metacharacter
     ^	Match the beginning of the string
     .	Match any character
@@ -40,25 +40,25 @@ TRex implements the following expressions
     |	Alternation
     ()	Grouping (creates a capture)
     []	Character class  
-
+`
 * GREEDY CLOSURES
-
+`
     *	   Match 0 or more times
     +	   Match 1 or more times
     ?	   Match 1 or 0 times
     {n}    Match exactly n times
     {n,}   Match at least n times
     {n,m}  Match at least n but not more than m times  
-
+`
 * ESCAPE CHARACTERS
-
+`
     \t		tab                   (HT, TAB)
     \n		newline               (LF, NL)
     \r		return                (CR)
     \f		form feed             (FF)
-
+`
 * PREDEFINED CLASSES
-
+`
     \l		lowercase next char
     \u		uppercase next char
     \a		letters
@@ -77,7 +77,7 @@ TRex implements the following expressions
     \P		non punctation
     \b		word boundary
     \B		non word boundary
-
+`
 API DOC
 =======
 

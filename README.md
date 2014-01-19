@@ -1,5 +1,5 @@
 TINY-REX https://github.com/omtinez/tiny-rex
-============================================
+--------------------------------------------
 
 Tiny-Rex a tiny regular expression library.
 
@@ -31,7 +31,7 @@ binary format, the binary size is under 8K.
 		source distribution.
 		
 TRex implements the following expressions
-=========================================
+-----------------------------------------
 
     \	Quote the next metacharacter
     ^	Match the beginning of the string
@@ -41,7 +41,7 @@ TRex implements the following expressions
     ()	Grouping (creates a capture)
     []	Character class  
 
-_GREEDY CLOSURES_
+* GREEDY CLOSURES
 
     *	   Match 0 or more times
     +	   Match 1 or more times
@@ -50,14 +50,14 @@ _GREEDY CLOSURES_
     {n,}   Match at least n times
     {n,m}  Match at least n but not more than m times  
 
-*ESCAPE CHARACTERS*
+* ESCAPE CHARACTERS
 
     \t		tab                   (HT, TAB)
     \n		newline               (LF, NL)
     \r		return                (CR)
     \f		form feed             (FF)
 
-*PREDEFINED CLASSES*
+* PREDEFINED CLASSES
 
     \l		lowercase next char
     \u		uppercase next char
